@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Insect Detector</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f4f4f9; }
+        .container { background: white; padding: 30px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        input { margin: 20px 0; }
+        button { padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        #result { margin-top: 20px; font-weight: bold; color: #333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ants vs Bees Detector</h1>
+        <input type="file" id="imageInput" accept="image/*">
+        <br>
+        <button onclick="uploadImage()">Identify Insect</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        async function uploadImage() {
+            const fileInput = document.getElementById('imageInput');
+            if (fileInput.files.length === 0) {
+                alert("Please select a file!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            document.getElementById('result').innerText = "Analyzing image...";
+
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                document.getElementById('result').innerText = "Result: " + data.prediction.toUpperCase();
+            } catch (error) {
+                document.getElementById('result').innerText = "Error: Could not connect to API";
+            }
+        }
+    </script>
+</body>
+</html>
